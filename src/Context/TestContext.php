@@ -69,7 +69,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Given a Behat configuration containing:
+     * @Given /^a Behat configuration containing:$/
      */
     public function thereIsConfiguration(PyStringNode $content)
     {
@@ -77,9 +77,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Given a config file :file containing:
-     * @Given a context file :file containing:
-     * @Given a feature file :file containing:
+     * @Given /^a (?:config|context|feature) file "([^"]+)" containing:$/
      */
     public function thereIsFile($file, PyStringNode $content)
     {
@@ -87,7 +85,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @When I run Behat
+     * @When /^I run Behat$/
      */
     public function iRunBehat()
     {
@@ -98,7 +96,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then it should pass
+     * @Then /^it should pass$/
      */
     public function itShouldPass()
     {
@@ -112,8 +110,8 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then it should pass with:
-     * @Then it should pass with :expectedOutput
+     * @Then /^it should pass with:$/
+     * @Then /^it should pass with "([^"]+)"$/
      */
     public function itShouldPassWith($expectedOutput)
     {
@@ -122,7 +120,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then it should fail
+     * @Then /^it should fail$/
      */
     public function itShouldFail()
     {
@@ -136,8 +134,8 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then it should fail with:
-     * @Then it should fail with :expectedOutput
+     * @Then /^it should fail with:$/
+     * @Then /^it should fail with "([^"]+)"$/
      */
     public function itShouldFailWith($expectedOutput)
     {
