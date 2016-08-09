@@ -113,8 +113,9 @@ final class TestContext implements Context
 
     /**
      * @Then it should pass with:
+     * @Then it should pass with :expectedOutput
      */
-    public function itShouldPassWith(PyStringNode $expectedOutput)
+    public function itShouldPassWith($expectedOutput)
     {
         $this->itShouldPass();
         $this->assertOutputMatches((string) $expectedOutput);
@@ -136,8 +137,9 @@ final class TestContext implements Context
 
     /**
      * @Then it should fail with:
+     * @Then it should fail with :expectedOutput
      */
-    public function itShouldFailWith(PyStringNode $expectedOutput)
+    public function itShouldFailWith($expectedOutput)
     {
         $this->itShouldFail();
         $this->assertOutputMatches((string) $expectedOutput);
