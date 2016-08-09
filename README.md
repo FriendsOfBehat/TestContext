@@ -18,5 +18,5 @@ default:
     suites:
         default:
             contexts:
-                - "FriendsOfBehat\TestContext\Context\TestContext"
+                - FriendsOfBehat\TestContext\Context\TestContext
 ```
