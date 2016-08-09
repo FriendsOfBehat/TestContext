@@ -110,8 +110,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then /^it should pass with:$/
-     * @Then /^it should pass with "([^"]+)"$/
+     * @Then /^it should pass with(?: "([^"]+)"|:)$/
      */
     public function itShouldPassWith($expectedOutput)
     {
@@ -134,8 +133,7 @@ final class TestContext implements Context
     }
 
     /**
-     * @Then /^it should fail with:$/
-     * @Then /^it should fail with "([^"]+)"$/
+     * @Then /^it should fail with(?: "([^"]+)"|:)$/
      */
     public function itShouldFailWith($expectedOutput)
     {
