@@ -46,6 +46,7 @@ Feature: Testing Behat in Behat
                 Then it passes with output "Krzysztof Krawczyk"
         """
         When I run Behat
+        Then it should pass with "Krzysztof Krawczyk"
         Then it should pass with:
         """
         Krzysztof Krawczyk
@@ -71,6 +72,7 @@ Feature: Testing Behat in Behat
                 Then it fails with output "Krzysztof Krawczyk"
         """
         When I run Behat
+        Then it should fail with "Krzysztof Krawczyk"
         Then it should fail with:
         """
         Krzysztof Krawczyk
