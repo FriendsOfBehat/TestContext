@@ -4,15 +4,7 @@ Feature: Testing Behat in Behat
     I want to run Behat while running Behat
 
     Background:
-        Given a Behat configuration containing:
-        """
-        default:
-            suites:
-                default:
-                    contexts:
-                        - FriendsOfBehat\TestContext\Context\TestContext
-        """
-        And a context file "features/bootstrap/FeatureContext.php" containing:
+        Given a context file "features/bootstrap/FeatureContext.php" containing:
         """
         <?php
 
@@ -23,13 +15,16 @@ Feature: Testing Behat in Behat
             /** @Then it passes */
             public function itPasses() {}
 
+            /** @Then it fails */
+            public function itFails() { throw new \RuntimeException(); }
+
             /** @Then it passes with output :output */
             public function itPassesWithOutput($output) { echo $output; }
         }
         """
 
     Scenario: Passing scenario
-        Given a feature file "features/test.feature" containing:
+        Given a feature file "features/passing_scenario.feature" containing:
         """
         Feature: Passing feature
 
@@ -40,7 +35,7 @@ Feature: Testing Behat in Behat
         Then it should pass
 
     Scenario: Passing scenario with output
-        Given a feature file "features/test.feature" containing:
+        Given a feature file "features/passing_scenario_with_output.feature" containing:
         """
         Feature: Passing feature with output
 
@@ -52,3 +47,14 @@ Feature: Testing Behat in Behat
         """
         Krzysztof Krawczyk
         """
+
+    Scenario: Failing scenario
+        Given a feature file "features/failing_scenario.feature" containing:
+        """
+        Feature: Failing feature
+
+            Scenario: Failing scenario
+                Then it fails
+        """
+        When I run Behat
+        Then it should fail
