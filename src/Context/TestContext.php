@@ -12,7 +12,6 @@
 namespace FriendsOfBehat\TestContext\Context;
 
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -69,19 +68,19 @@ final class TestContext implements Context
     }
 
     /**
-     * @Given /^a Behat configuration containing:$/
+     * @Given /^a Behat configuration containing(?: "([^"]+)"|:)$/
      */
-    public function thereIsConfiguration(PyStringNode $content)
+    public function thereIsConfiguration($content)
     {
-        self::$filesystem->dumpFile(self::$workingDir . '/behat.yml', $content->getRaw());
+        self::$filesystem->dumpFile(self::$workingDir . '/behat.yml', (string) $content);
     }
 
     /**
-     * @Given /^a (?:config|context|feature) file "([^"]+)" containing:$/
+     * @Given /^a (?:.+ |)file "([^"]+)" containing(?: "([^"]+)"|:)$/
      */
-    public function thereIsFile($file, PyStringNode $content)
+    public function thereIsFile($file, $content)
     {
-        self::$filesystem->dumpFile(self::$workingDir . '/' . $file, $content->getRaw());
+        self::$filesystem->dumpFile(self::$workingDir . '/' . $file, (string) $content);
     }
 
     /**
