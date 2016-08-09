@@ -91,7 +91,7 @@ final class TestContext implements Context
      */
     public function iRunBehat()
     {
-        $this->process = new Process(sprintf('%s %s', self::$phpBin, escapeshellarg(BEHAT_BIN_PATH)));
+        $this->process = new Process(sprintf('%s %s --strict', self::$phpBin, escapeshellarg(BEHAT_BIN_PATH)));
         $this->process->setWorkingDirectory(self::$workingDir);
         $this->process->start();
         $this->process->wait();
