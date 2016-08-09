@@ -20,6 +20,9 @@ Feature: Testing Behat in Behat
 
             /** @Then it passes with output :output */
             public function itPassesWithOutput($output) { echo $output; }
+
+            /** @Then it fails with output :output */
+            public function itFailsWithOutput($output) { throw new \RuntimeException($output); }
         }
         """
 
@@ -58,3 +61,17 @@ Feature: Testing Behat in Behat
         """
         When I run Behat
         Then it should fail
+
+    Scenario: Failing scenario with output
+        Given a feature file "features/failing_scenario_with_output.feature" containing:
+        """
+        Feature: Failing feature with output
+
+            Scenario: Failing scenario with output
+                Then it fails with output "Krzysztof Krawczyk"
+        """
+        When I run Behat
+        Then it should fail with:
+        """
+        Krzysztof Krawczyk
+        """
