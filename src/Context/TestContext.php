@@ -72,7 +72,7 @@ final class TestContext implements Context
      */
     public function thereIsConfiguration($content)
     {
-        self::$filesystem->dumpFile(self::$workingDir . '/behat.yml', (string) $content);
+        $this->thereIsFile('behat.yml', $content);
     }
 
     /**
