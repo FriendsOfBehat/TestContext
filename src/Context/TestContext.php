@@ -56,6 +56,7 @@ final class TestContext implements Context
      */
     public function beforeScenario()
     {
+        self::$filesystem->remove(self::$workingDir);
         self::$filesystem->mkdir(self::$workingDir, 0777);
     }
 
