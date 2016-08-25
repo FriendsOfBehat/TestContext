@@ -6,17 +6,17 @@ Provides reusable context that helps in testing Behat extensions.
 
 1. Install it:
 
-```bash
-$ composer require friends-of-behat/test-context --dev
-```
+    ```bash
+    $ composer require friends-of-behat/test-context --dev
+    ```
 
 2. Include in your suite:
-
-```yaml
-default:
-    # ...
-    suites:
-        default:
-            contexts:
-                - FriendsOfBehat\TestContext\Context\TestContext
-```
+    
+    ```yaml
+    default:
+        # ...
+        suites:
+            default:
+                contexts:
+                    - FriendsOfBehat\TestContext\Context\TestContext
+    ```
