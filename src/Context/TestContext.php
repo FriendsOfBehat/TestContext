@@ -142,6 +142,14 @@ final class TestContext implements Context
     }
 
     /**
+     * @Then /^it should end with(?: "([^"]+)"|:)$/
+     */
+    public function itShouldEndWith($expectedOutput)
+    {
+        $this->assertOutputMatches((string) $expectedOutput);
+    }
+
+    /**
      * @param string $expectedOutput
      */
     private function assertOutputMatches($expectedOutput)
