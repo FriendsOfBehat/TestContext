@@ -77,3 +77,13 @@ Feature: Testing Behat in Behat
         """
         Krzysztof Krawczyk
         """
+
+    Scenario: Failing Behat due to its configuration
+        Given a Behat configuration containing:
+        """
+        default:
+            extensions:
+                Unknown\Extension: ~
+        """
+        When I run Behat
+        Then it should fail with "Behat\Testwork\ServiceContainer\Exception\ExtensionInitializationException"
