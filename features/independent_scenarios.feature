@@ -30,7 +30,7 @@ Feature: Independent scenarios
 
     Scenario: Second scenario
         When I run Behat
-        Then it should fail with:
+        Then it should end with:
         """
         No scenarios
         No steps
