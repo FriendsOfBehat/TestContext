@@ -1,4 +1,4 @@
-Feature: Testing Behat in Behat
+Feature: Basic steps for testing
     In order to test a context used to test Behat
     As a Behat extension developer
     I want to run Behat while running Behat
