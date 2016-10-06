@@ -93,6 +93,102 @@ final class TestContext implements Context
     }
 
     /**
+     * @Given /^a feature file with passing scenario$/
+     */
+    public function thereIsFeatureFileWithPassingScenario()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+class FeatureContext implements \Behat\Behat\Context\Context
+{
+    /** @Then it passes */
+    public function itPasses() {}
+}
+CON
+);
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Passing feature
+
+    Scenario: Passing scenario
+        Then it passes
+FEA
+);
+    }
+
+    /**
+     * @Given /^a feature file with failing scenario$/
+     */
+    public function thereIsFeatureFileWithFailingScenario()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+class FeatureContext implements \Behat\Behat\Context\Context
+{
+    /** @Then it fails */
+    public function itFails() { throw new \RuntimeException(); }
+}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Failing feature
+
+    Scenario: Failing scenario
+        Then it fails
+FEA
+        );
+    }
+
+    /**
+     * @Given /^a feature file with scenario with missing step$/
+     */
+    public function thereIsFeatureFileWithScenarioWithMissingStep()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php 
+
+class FeatureContext implements \Behat\Behat\Context\Context {}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Feature with missing step
+
+    Scenario: Scenario with missing step
+        Then it does not have this step
+FEA
+        );
+    }
+
+    /**
+     * @Given /^a feature file with scenario with pending step$/
+     */
+    public function thereIsFeatureFileWithScenarioWithPendingStep()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+class FeatureContext implements \Behat\Behat\Context\Context 
+{
+    /** @Then it has this step as pending */
+    public function itFails() { throw new \Behat\Behat\Tester\Exception\PendingException(); }
+}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Feature with pending step
+
+    Scenario: Scenario with pending step
+        Then it has this step as pending
+FEA
+        );
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()
