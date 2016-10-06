@@ -100,9 +100,7 @@ final class TestContext implements Context
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
 
-use Behat\Behat\Context\Context;
-
-class FeatureContext implements Context
+class FeatureContext implements \Behat\Behat\Context\Context
 {
     /** @Then it passes */
     public function itPasses() {}
@@ -127,9 +125,7 @@ FEA
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
 
-use Behat\Behat\Context\Context;
-
-class FeatureContext implements Context
+class FeatureContext implements \Behat\Behat\Context\Context
 {
     /** @Then it fails */
     public function itFails() { throw new \RuntimeException(); }
@@ -152,11 +148,9 @@ FEA
     public function thereIsFeatureFileWithScenarioWithMissingStep()
     {
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
-<?php
+<?php 
 
-use Behat\Behat\Context\Context;
-
-class FeatureContext implements Context {}
+class FeatureContext implements \Behat\Behat\Context\Context {}
 CON
         );
 
@@ -177,13 +171,10 @@ FEA
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
 
-use Behat\Behat\Context\Context;
-use Behat\Behat\Tester\Exception\PendingException;
-
-class FeatureContext implements Context 
+class FeatureContext implements \Behat\Behat\Context\Context 
 {
     /** @Then it has this step as pending */
-    public function itFails() { throw new PendingException(); }
+    public function itFails() { throw new \Behat\Behat\Tester\Exception\PendingException(); }
 }
 CON
         );
