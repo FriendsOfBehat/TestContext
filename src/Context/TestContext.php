@@ -170,6 +170,34 @@ FEA
     }
 
     /**
+     * @Given /^a feature file with scenario with pending step$/
+     */
+    public function thereIsFeatureFileWithScenarioWithPendingStep()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+use Behat\Behat\Context\Context;
+use Behat\Behat\Tester\Exception\PendingException;
+
+class FeatureContext implements Context 
+{
+    /** @Then it has this step as pending */
+    public function itFails() { throw new PendingException(); }
+}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Feature with pending step
+
+    Scenario: Scenario with pending step
+        Then it has this step as pending
+FEA
+        );
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()

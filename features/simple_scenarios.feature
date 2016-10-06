@@ -29,3 +29,12 @@ Feature: Simple scenarios
         1 scenario (1 undefined)
         1 step (1 undefined)
         """
+
+    Scenario: Simple scenario with pending step
+        Given a feature file with scenario with pending step
+        When I run Behat
+        Then it should fail with:
+        """
+        1 scenario (1 pending)
+        1 step (1 pending)
+        """
