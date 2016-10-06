@@ -147,6 +147,29 @@ FEA
     }
 
     /**
+     * @Given /^a feature file with scenario with missing step$/
+     */
+    public function thereIsFeatureFileWithScenarioWithMissingStep()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+use Behat\Behat\Context\Context;
+
+class FeatureContext implements Context {}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Feature with missing step
+
+    Scenario: Scenario with missing step
+        Then it does not have this step
+FEA
+        );
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()
