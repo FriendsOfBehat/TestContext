@@ -120,6 +120,33 @@ FEA
     }
 
     /**
+     * @Given /^a feature file with failing scenario$/
+     */
+    public function thereIsFeatureFileWithFailingScenario()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+use Behat\Behat\Context\Context;
+
+class FeatureContext implements Context
+{
+    /** @Then it fails */
+    public function itFails() { throw new \RuntimeException(); }
+}
+CON
+        );
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Failing feature
+
+    Scenario: Failing scenario
+        Then it fails
+FEA
+        );
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()

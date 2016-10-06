@@ -7,3 +7,8 @@ Feature: Simple scenarios
         Given a feature file with passing scenario
         When I run Behat
         Then it should pass with "1 scenario"
+
+    Scenario: Simple failing scenario
+        Given a feature file with failing scenario
+        When I run Behat
+        Then it should fail with "1 scenario"
