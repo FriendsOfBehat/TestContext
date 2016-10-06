@@ -85,6 +85,14 @@ final class TestContext implements Context
     }
 
     /**
+     * @Given /^a feature file containing(?: "([^"]+)"|:)$/
+     */
+    public function thereIsFeatureFile($content)
+    {
+        $this->thereIsFile(sprintf('features/%s.feature', md5(uniqid(null, true))), $content);
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()

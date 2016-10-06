@@ -78,6 +78,17 @@ Feature: Basic steps for testing
         Krzysztof Krawczyk
         """
 
+    Scenario: Passing scenario without specifying its path
+        Given a feature file containing:
+        """
+        Feature: Passing feature
+
+            Scenario: Passing scenario
+                Then it passes
+        """
+        When I run Behat
+        Then it should pass
+
     Scenario: Failing Behat due to its configuration
         Given a Behat configuration containing:
         """
