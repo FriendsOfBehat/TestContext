@@ -93,6 +93,33 @@ final class TestContext implements Context
     }
 
     /**
+     * @Given /^a feature file with passing scenario$/
+     */
+    public function thereIsFeatureFileWithPassingScenario()
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
+<?php
+
+use Behat\Behat\Context\Context;
+
+class FeatureContext implements Context
+{
+    /** @Then it passes */
+    public function itPasses() {}
+}
+CON
+);
+
+        $this->thereIsFeatureFile(<<<FEA
+Feature: Passing feature
+
+    Scenario: Passing scenario
+        Then it passes
+FEA
+);
+    }
+
+    /**
      * @When /^I run Behat$/
      */
     public function iRunBehat()
