@@ -13,6 +13,7 @@ Provides reusable context that helps in testing Behat extensions.
 2. Include in your suite:
     
     ```yaml
+    # behat.yml
     default:
         # ...
         suites:
