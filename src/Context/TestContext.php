@@ -16,9 +16,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
-/**
- * @author Kamil Kokot <kamil@kokot.me>
- */
 final class TestContext implements Context
 {
     /**
