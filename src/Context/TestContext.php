@@ -88,7 +88,7 @@ final class TestContext implements Context
      */
     public function thereIsFeatureFile($content): void
     {
-        $this->thereIsFile(sprintf('features/%s.feature', md5(uniqid(null, true))), $content);
+        $this->thereIsFile(sprintf('features/%s.feature', md5(uniqid('', true))), $content);
     }
 
     /**
