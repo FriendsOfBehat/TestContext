@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TestContext package.
  *
@@ -41,7 +43,7 @@ final class TestContext implements Context
     /**
      * @BeforeFeature
      */
-    public static function beforeFeature()
+    public static function beforeFeature(): void
     {
         self::$workingDir = sprintf('%s/%s/', sys_get_temp_dir(), uniqid('', true));
         self::$filesystem = new Filesystem();
@@ -51,7 +53,7 @@ final class TestContext implements Context
     /**
      * @BeforeScenario
      */
-    public function beforeScenario()
+    public function beforeScenario(): void
     {
         self::$filesystem->remove(self::$workingDir);
         self::$filesystem->mkdir(self::$workingDir, 0777);
@@ -60,7 +62,7 @@ final class TestContext implements Context
     /**
      * @AfterScenario
      */
-    public function afterScenario()
+    public function afterScenario(): void
     {
         self::$filesystem->remove(self::$workingDir);
     }
@@ -68,7 +70,7 @@ final class TestContext implements Context
     /**
      * @Given /^a Behat configuration containing(?: "([^"]+)"|:)$/
      */
-    public function thereIsConfiguration($content)
+    public function thereIsConfiguration($content): void
     {
         $this->thereIsFile('behat.yml', $content);
     }
@@ -76,7 +78,7 @@ final class TestContext implements Context
     /**
      * @Given /^a (?:.+ |)file "([^"]+)" containing(?: "([^"]+)"|:)$/
      */
-    public function thereIsFile($file, $content)
+    public function thereIsFile($file, $content): void
     {
         self::$filesystem->dumpFile(self::$workingDir . '/' . $file, (string) $content);
     }
@@ -84,7 +86,7 @@ final class TestContext implements Context
     /**
      * @Given /^a feature file containing(?: "([^"]+)"|:)$/
      */
-    public function thereIsFeatureFile($content)
+    public function thereIsFeatureFile($content): void
     {
         $this->thereIsFile(sprintf('features/%s.feature', md5(uniqid(null, true))), $content);
     }
@@ -92,10 +94,12 @@ final class TestContext implements Context
     /**
      * @Given /^a feature file with passing scenario$/
      */
-    public function thereIsFeatureFileWithPassingScenario()
+    public function thereIsFeatureFileWithPassingScenario(): void
     {
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
+
+declare(strict_types=1);
 
 class FeatureContext implements \Behat\Behat\Context\Context
 {
@@ -117,10 +121,12 @@ FEA
     /**
      * @Given /^a feature file with failing scenario$/
      */
-    public function thereIsFeatureFileWithFailingScenario()
+    public function thereIsFeatureFileWithFailingScenario(): void
     {
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
+
+declare(strict_types=1);
 
 class FeatureContext implements \Behat\Behat\Context\Context
 {
@@ -142,10 +148,12 @@ FEA
     /**
      * @Given /^a feature file with scenario with missing step$/
      */
-    public function thereIsFeatureFileWithScenarioWithMissingStep()
+    public function thereIsFeatureFileWithScenarioWithMissingStep(): void
     {
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
-<?php 
+<?php
+
+declare(strict_types=1); 
 
 class FeatureContext implements \Behat\Behat\Context\Context {}
 CON
@@ -163,10 +171,12 @@ FEA
     /**
      * @Given /^a feature file with scenario with pending step$/
      */
-    public function thereIsFeatureFileWithScenarioWithPendingStep()
+    public function thereIsFeatureFileWithScenarioWithPendingStep(): void
     {
         $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<CON
 <?php
+
+declare(strict_types=1);
 
 class FeatureContext implements \Behat\Behat\Context\Context 
 {
@@ -188,7 +198,7 @@ FEA
     /**
      * @When /^I run Behat$/
      */
-    public function iRunBehat()
+    public function iRunBehat(): void
     {
         $this->process = new Process(sprintf('%s %s --strict -vvv --no-interaction --lang=en', self::$phpBin, escapeshellarg(BEHAT_BIN_PATH)));
         $this->process->setWorkingDirectory(self::$workingDir);
@@ -199,7 +209,7 @@ FEA
     /**
      * @Then /^it should pass$/
      */
-    public function itShouldPass()
+    public function itShouldPass(): void
     {
         if (0 === $this->getProcessExitCode()) {
             return;
@@ -213,7 +223,7 @@ FEA
     /**
      * @Then /^it should pass with(?: "([^"]+)"|:)$/
      */
-    public function itShouldPassWith($expectedOutput)
+    public function itShouldPassWith($expectedOutput): void
     {
         $this->itShouldPass();
         $this->assertOutputMatches((string) $expectedOutput);
@@ -222,7 +232,7 @@ FEA
     /**
      * @Then /^it should fail$/
      */
-    public function itShouldFail()
+    public function itShouldFail(): void
     {
         if (0 !== $this->getProcessExitCode()) {
             return;
@@ -236,7 +246,7 @@ FEA
     /**
      * @Then /^it should fail with(?: "([^"]+)"|:)$/
      */
-    public function itShouldFailWith($expectedOutput)
+    public function itShouldFailWith($expectedOutput): void
     {
         $this->itShouldFail();
         $this->assertOutputMatches((string) $expectedOutput);
@@ -245,7 +255,7 @@ FEA
     /**
      * @Then /^it should end with(?: "([^"]+)"|:)$/
      */
-    public function itShouldEndWith($expectedOutput)
+    public function itShouldEndWith($expectedOutput): void
     {
         $this->assertOutputMatches((string) $expectedOutput);
     }
@@ -253,7 +263,7 @@ FEA
     /**
      * @param string $expectedOutput
      */
-    private function assertOutputMatches($expectedOutput)
+    private function assertOutputMatches($expectedOutput): void
     {
         $pattern = '/' . preg_quote($expectedOutput, '/') . '/sm';
         $output = $this->getProcessOutput();
@@ -275,7 +285,7 @@ FEA
     /**
      * @return string
      */
-    private function getProcessOutput()
+    private function getProcessOutput(): string
     {
         $this->assertProcessIsAvailable();
 
@@ -285,7 +295,7 @@ FEA
     /**
      * @return int
      */
-    private function getProcessExitCode()
+    private function getProcessExitCode(): int
     {
         $this->assertProcessIsAvailable();
 
@@ -295,7 +305,7 @@ FEA
     /**
      * @throws \BadMethodCallException
      */
-    private function assertProcessIsAvailable()
+    private function assertProcessIsAvailable(): void
     {
         if (null === $this->process) {
             throw new \BadMethodCallException('Behat proccess cannot be found. Did you run it before making assertions?');
@@ -307,7 +317,7 @@ FEA
      *
      * @throws \RuntimeException
      */
-    private static function findPhpBinary()
+    private static function findPhpBinary(): string
     {
         $phpBinary = (new PhpExecutableFinder())->find();
         if (false === $phpBinary) {
