@@ -15,6 +15,9 @@
         "symfony/filesystem": "^4.4 || ^5.1",
         "symfony/process": "^4.4 || ^5.1"
     },
+    "require-dev": {
+        "vimeo/psalm": "4.1.1"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfBehat\\TestContext\\": "src/"
