@@ -12,7 +12,7 @@ on:
 jobs:
     tests:
         runs-on: ubuntu-latest
-        name: "PHP ${{ matrix.php }}"
+        name: "PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}"
         strategy:
             fail-fast: false
             matrix:
@@ -42,6 +42,10 @@ jobs:
             -
                 name: Composer validate
                 run: composer validate --strict --ansi
+
+            -
+                name: Run Psalm
+                run: vendor/bin/psalm src --no-progress
 
             -
                 name: Run tests
