@@ -6,17 +6,18 @@
         {
             "name": "Kamil Kokot",
             "email": "kamil@kokot.me",
-            "homepage": "http://kamil.kokot.me"
+            "homepage": "https://kamilkokot.com"
         }
     ],
     "require": {
-        "php": "^7.1",
-
-        "behat/behat": "^3.1",
-        "symfony/filesystem": "^3.2|^4.0",
-        "symfony/process": "^3.2|^4.0"
+        "php": "^7.3 || ^8.0",
+        "behat/behat": "^3.5",
+        "symfony/filesystem": "^4.4 || ^5.1",
+        "symfony/process": "^4.4 || ^5.1"
     },
     "autoload": {
-        "psr-4": { "FriendsOfBehat\\TestContext\\": "src/" }
+        "psr-4": {
+            "FriendsOfBehat\\TestContext\\": "src/"
+        }
     }
 }
