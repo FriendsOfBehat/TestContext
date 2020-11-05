@@ -201,8 +201,7 @@ FEA
     public function iRunBehat(): void
     {
         /** @psalm-suppress UndefinedConstant */
-        $this->process = new Process(sprintf('%s %s --strict -vvv --no-interaction --lang=en', self::$phpBin, escapeshellarg(\BEHAT_BIN_PATH)));
-        $this->process->setWorkingDirectory(self::$workingDir);
+        $this->process = new Process([self::$phpBin, trim(escapeshellarg(BEHAT_BIN_PATH), "'"), '--strict', '-vvv', '--no-interaction', '--lang=en'], self::$workingDir);
         $this->process->start();
         $this->process->wait();
     }
