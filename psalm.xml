@@ -13,10 +13,12 @@
         </ignoreFiles>
     </projectFiles>
 
-    <!-- Workaround for https://github.com/vimeo/psalm/issues/7026 -->
-    <ReservedWord>
-        <errorLevel type="suppress">
-            <directory name="src"/>
-        </errorLevel>
-    </ReservedWord>
+    <issueHandlers>
+        <!-- Workaround for https://github.com/vimeo/psalm/issues/7026 -->
+        <ReservedWord>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </ReservedWord>
+    </issueHandlers>
 </psalm>
