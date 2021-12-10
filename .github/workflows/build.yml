@@ -52,7 +52,7 @@ jobs:
 
             -
                 name: Run Psalm
-                run: vendor/bin/psalm src --no-progress --php-version="${{ matrix.symfony }}"
+                run: vendor/bin/psalm src --no-progress --php-version="${{ matrix.php }}"
 
             -
                 name: Run tests
