@@ -16,8 +16,13 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: ["7.3", "7.4", "8.0"]
-                symfony: ["4.4.*", "5.1.*"]
+                php: ["7.3", "7.4"]
+                symfony: ["5.3.*", "5.4.0"]
+                include:
+                    -   symfony: "5.4.*"
+                        php: "8.0"
+                    -   symfony: "6.0.*"
+                        php: "8.0"
 
         steps:
             -
@@ -31,9 +36,13 @@ jobs:
                     coverage: none
 
             -
-                name: Update Symfony version
+                name: Restrict Symfony version
                 if: matrix.symfony != ''
-                run: composer require "symfony/filesystem:${{ matrix.symfony }}" "symfony/process:${{ matrix.symfony }}" --no-update --no-scripts
+                run: |
+                    composer global require --no-progress --no-scripts --no-plugins "symfony/flex"
+                    composer config extra.symfony.require "${{ matrix.symfony }}"
+                    composer config minimum-stability "dev"
+                    composer config prefer-stable true
 
             -
                 name: Install dependencies
