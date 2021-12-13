@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "behat/behat": "^3.5",
         "symfony/filesystem": "^5.3 || ^6.0",
         "symfony/process": "^5.3 || ^6.0"
