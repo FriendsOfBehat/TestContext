@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "behat/behat": "^3.5",
+        "behat/behat": "dev-master",
         "symfony/filesystem": "^5.4 || ^6.4 || ^7.0",
         "symfony/process": "^5.4 || ^6.4 || ^7.0"
     },
