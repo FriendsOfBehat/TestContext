@@ -70,7 +70,38 @@ use Symfony\Component\Yaml\Yaml;
 return new class implements \Behat\Config\ConfigInterface {
     public function toArray(): array
     {
-        return Yaml::parse(%s);
+        $config = Yaml::parse(%s);
+
+        foreach ($config as &$profile) {
+            if (!is_array($profile) || !isset($profile['extensions'])) {
+                continue;
+            }
+
+            $resolved = [];
+            foreach ($profile['extensions'] as $name => $extensionConfig) {
+                $resolved[$this->resolveExtensionClassName($name)] = $extensionConfig;
+            }
+            $profile['extensions'] = $resolved;
+        }
+
+        return $config;
+    }
+
+    private function resolveExtensionClassName(string $name): string
+    {
+        if (class_exists($name)) {
+            return $name;
+        }
+
+        $parts = explode('\\', $name);
+        $last = preg_replace('/Extension$/', '', end($parts)) . 'Extension';
+        $guessed = $name . '\\ServiceContainer\\' . $last;
+
+        if (class_exists($guessed)) {
+            return $guessed;
+        }
+
+        return $name;
     }
 };
 PHP,
@@ -81,11 +112,6 @@ PHP,
         }
 
         $this->thereIsFile('behat.yml', $content);
-    }
-
-    private static function isBehat4(): bool
-    {
-        return class_exists(\Behat\Config\Config::class);
     }
 
     #[Given('/^a (?:.+ |)file "([^"]+)" containing(?: "([^"]+)"|:)$/')]
@@ -297,5 +323,10 @@ FEA
         }
 
         return $phpBinary;
+    }
+
+    private static function isBehat4(): bool
+    {
+        return class_exists(\Behat\Config\Config::class);
     }
 }
