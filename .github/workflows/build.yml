@@ -12,19 +12,30 @@ on:
 jobs:
     tests:
         runs-on: ubuntu-latest
-        name: "PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}"
+        name: "PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, Behat ${{ matrix.behat }}, ${{ matrix.dependencies }} deps"
         strategy:
             fail-fast: false
             matrix:
                 php: ["8.1", "8.2", "8.3"]
-                symfony: ["5.4.*", "6.4.*", "7.0.*"]
+                symfony: ["^5.4", "^6.4", "^7.0"]
+                behat: ["^3.10"]
+                dependencies: ["lowest", "highest"]
                 exclude:
-                    - symfony: "7.0.*"
+                    - symfony: "^7.0"
                       php: "8.1"
+                include:
+                    - php: "8.3"
+                      symfony: "^7.0"
+                      behat: "4.x-dev"
+                      dependencies: "highest"
+                    - php: "8.4"
+                      symfony: "^8.0"
+                      behat: "4.x-dev"
+                      dependencies: "highest"
 
         steps:
             -
-                uses: actions/checkout@v2
+                uses: actions/checkout@v6
 
             -
                 name: Setup PHP
@@ -38,22 +49,28 @@ jobs:
                 if: matrix.symfony != ''
                 run: |
                     composer global require --no-progress --no-scripts --no-plugins "symfony/flex"
+                    composer global config --no-plugins allow-plugins.symfony/flex true
                     composer config extra.symfony.require "${{ matrix.symfony }}"
                     composer config minimum-stability "dev"
                     composer config prefer-stable true
 
             -
+                name: Restrict Behat version
+                run: composer require --no-update "behat/behat:${{ matrix.behat }}"
+
+            -
                 name: Install dependencies
-                run: composer update
+                run: composer update ${{ matrix.dependencies == 'lowest' && '--prefer-lowest --prefer-stable' || '' }}
 
             -
                 name: Composer validate
+                if: matrix.behat != '4.x-dev'
                 run: composer validate --strict --ansi
 
             -
-                name: Run Psalm
-                run: vendor/bin/psalm src --no-progress --php-version="${{ matrix.php }}"
+                name: Run PHPStan
+                run: vendor/bin/phpstan analyse --no-progress
 
             -
                 name: Run tests
-                run: vendor/bin/behat -f progress --strict -vvv --no-interaction --colors
+                run: vendor/bin/behat ${{ matrix.behat != '4.x-dev' && '--config behat.yml.dist' || '' }} -f progress --strict -vvv --no-interaction --colors
