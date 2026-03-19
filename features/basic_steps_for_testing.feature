@@ -9,19 +9,20 @@ Feature: Basic steps for testing
         <?php
 
         use Behat\Behat\Context\Context;
+        use Behat\Step\Then;
 
         class FeatureContext implements Context
         {
-            /** @Then it passes */
+            #[Then('it passes')]
             public function itPasses() {}
 
-            /** @Then it fails */
+            #[Then('it fails')]
             public function itFails() { throw new \RuntimeException(); }
 
-            /** @Then it passes with output :output */
+            #[Then('it passes with output :output')]
             public function itPassesWithOutput($output) { echo $output; }
 
-            /** @Then it fails with output :output */
+            #[Then('it fails with output :output')]
             public function itFailsWithOutput($output) { throw new \RuntimeException($output); }
         }
         """

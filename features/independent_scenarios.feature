@@ -9,10 +9,11 @@ Feature: Independent scenarios
         <?php
 
         use Behat\Behat\Context\Context;
+        use Behat\Step\Then;
 
         class FeatureContext implements Context
         {
-            /** @Then it passes */
+            #[Then('it passes')]
             public function itPasses() {}
         }
         """
