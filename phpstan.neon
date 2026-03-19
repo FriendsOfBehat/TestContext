@@ -2,3 +2,5 @@ parameters:
     level: max
     paths:
         - src
+    excludePaths:
+        - src/Behat3/
