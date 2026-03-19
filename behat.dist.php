@@ -12,6 +12,7 @@ return (new Config())
         (new Profile('default'))
             ->withSuite(
                 (new Suite('default'))
+                    ->withPaths(__DIR__ . '/features/attributes')
                     ->withContexts(TestContext::class)
             )
     );

@@ -24,6 +24,14 @@ jobs:
                     - symfony: "^7.0"
                       php: "8.1"
                 include:
+                    - php: "8.1"
+                      symfony: "^5.4"
+                      behat: ">=3.0 <3.10"
+                      dependencies: "lowest"
+                    - php: "8.2"
+                      symfony: "^6.4"
+                      behat: ">=3.0 <3.10"
+                      dependencies: "lowest"
                     - php: "8.3"
                       symfony: "^7.0"
                       behat: "4.x-dev"
@@ -69,6 +77,7 @@ jobs:
 
             -
                 name: Run PHPStan
+                if: matrix.behat != '>=3.0 <3.10'
                 run: vendor/bin/phpstan analyse --no-progress
 
             -
