@@ -9,27 +9,20 @@ Feature: Basic steps for testing
         <?php
 
         use Behat\Behat\Context\Context;
+        use Behat\Step\Then;
 
         class FeatureContext implements Context
         {
-            /**
-             * @Then it passes
-             */
+            #[Then('it passes')]
             public function itPasses() {}
 
-            /**
-             * @Then it fails
-             */
+            #[Then('it fails')]
             public function itFails() { throw new \RuntimeException(); }
 
-            /**
-             * @Then it passes with output :output
-             */
+            #[Then('it passes with output :output')]
             public function itPassesWithOutput($output) { echo $output; }
 
-            /**
-             * @Then it fails with output :output
-             */
+            #[Then('it fails with output :output')]
             public function itFailsWithOutput($output) { throw new \RuntimeException($output); }
         }
         """
@@ -100,9 +93,10 @@ Feature: Basic steps for testing
     Scenario: Failing Behat due to its configuration
         Given a Behat configuration containing:
         """
-        default:
-            extensions:
-                Unknown\Extension: ~
+        <?php
+        return new \Behat\Config\Config([
+            'default' => ['extensions' => ['Unknown\Extension' => null]],
+        ]);
         """
         When I run Behat
         Then it should fail with "Behat\Testwork\ServiceContainer\Exception\ExtensionInitializationException"
