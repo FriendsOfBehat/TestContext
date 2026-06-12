@@ -94,7 +94,7 @@ Feature: Basic steps for testing
         Given a Behat configuration containing:
         """
         <?php
-        return new \FriendsOfBehat\TestContext\Config\ArrayConfig([
+        return new \Behat\Config\Config([
             'default' => ['extensions' => ['Unknown\Extension' => null]],
         ]);
         """

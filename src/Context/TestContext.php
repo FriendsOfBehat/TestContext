@@ -6,36 +6,26 @@ namespace FriendsOfBehat\TestContext\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Hook\AfterScenario;
-use Behat\Hook\BeforeFeature;
 use Behat\Hook\BeforeScenario;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
 final class TestContext implements Context
 {
-    private static string $phpBin;
-
     private Filesystem $filesystem;
 
     private string $workingDir;
 
     private ?Process $process = null;
 
-    #[BeforeFeature]
-    public static function beforeFeature(): void
-    {
-        self::$phpBin = self::findPhpBinary();
-    }
-
     #[BeforeScenario]
     public function beforeScenario(): void
     {
         $this->filesystem = new Filesystem();
-        $this->workingDir = sprintf('%s/%s/', sys_get_temp_dir(), uniqid('', true));
+        $this->workingDir = sprintf('%s/%s', sys_get_temp_dir(), uniqid('', true));
         $this->filesystem->mkdir($this->workingDir, 0777);
         $this->process = null;
     }
@@ -120,11 +110,10 @@ FEA);
     public function iRunBehat(): void
     {
         $this->process = new Process(
-            [self::$phpBin, BEHAT_BIN_PATH, '--strict', '-vvv', '--no-interaction', '--lang=en'],
+            [PHP_BINARY, BEHAT_BIN_PATH, '--strict', '-vvv', '--no-interaction', '--lang=en'],
             $this->workingDir,
         );
-        $this->process->start();
-        $this->process->wait();
+        $this->process->run();
     }
 
     #[Then('/^it should pass$/')]
@@ -242,15 +231,5 @@ PHP);
             },
             $code,
         );
-    }
-
-    private static function findPhpBinary(): string
-    {
-        $phpBinary = (new PhpExecutableFinder())->find();
-        if (false === $phpBinary) {
-            throw new \RuntimeException('Unable to find the PHP executable.');
-        }
-
-        return $phpBinary;
     }
 }
