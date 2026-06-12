@@ -46,8 +46,7 @@ jobs:
             - name: Lock Symfony version
               run: composer require --no-update --no-interaction \
                   "symfony/filesystem:~${{ matrix.symfony-version }}" \
-                  "symfony/process:~${{ matrix.symfony-version }}" \
-                  "symfony/yaml:~${{ matrix.symfony-version }}"
+                  "symfony/process:~${{ matrix.symfony-version }}"
 
             - name: Require behat 4.x for Symfony 8+
               if: startsWith(matrix.symfony-version, '8.')

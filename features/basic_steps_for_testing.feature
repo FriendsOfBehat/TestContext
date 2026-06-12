@@ -93,9 +93,10 @@ Feature: Basic steps for testing
     Scenario: Failing Behat due to its configuration
         Given a Behat configuration containing:
         """
-        default:
-            extensions:
-                Unknown\Extension: ~
+        <?php
+        return new \FriendsOfBehat\TestContext\Config\ArrayConfig([
+            'default' => ['extensions' => ['Unknown\Extension' => null]],
+        ]);
         """
         When I run Behat
         Then it should fail with "Behat\Testwork\ServiceContainer\Exception\ExtensionInitializationException"

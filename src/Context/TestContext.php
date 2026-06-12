@@ -14,49 +14,42 @@ use Behat\Step\When;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Yaml\Yaml;
 
 final class TestContext implements Context
 {
-    private static string $workingDir;
-
-    private static Filesystem $filesystem;
-
     private static string $phpBin;
+
+    private Filesystem $filesystem;
+
+    private string $workingDir;
 
     private ?Process $process = null;
 
     #[BeforeFeature]
     public static function beforeFeature(): void
     {
-        self::$workingDir = sprintf('%s/%s/', sys_get_temp_dir(), uniqid('', true));
-        self::$filesystem = new Filesystem();
         self::$phpBin = self::findPhpBinary();
     }
 
     #[BeforeScenario]
     public function beforeScenario(): void
     {
-        self::$filesystem->remove(self::$workingDir);
-        self::$filesystem->mkdir(self::$workingDir, 0777);
+        $this->filesystem = new Filesystem();
+        $this->workingDir = sprintf('%s/%s/', sys_get_temp_dir(), uniqid('', true));
+        $this->filesystem->mkdir($this->workingDir, 0777);
+        $this->process = null;
     }
 
     #[AfterScenario]
     public function afterScenario(): void
     {
-        self::$filesystem->remove(self::$workingDir);
+        $this->filesystem->remove($this->workingDir);
     }
 
     #[Given('/^a Behat configuration containing(?: "([^"]+)"|:)$/')]
     public function thereIsConfiguration(string $content): void
     {
-        self::$filesystem->dumpFile(
-            self::$workingDir . '/behat.dist.php',
-            sprintf(
-                "<?php\nreturn new \\FriendsOfBehat\\TestContext\\Config\\ArrayConfig(%s);\n",
-                var_export(Yaml::parse($content), true),
-            ),
-        );
+        $this->filesystem->dumpFile($this->workingDir . '/behat.dist.php', $content);
     }
 
     #[Given('/^a (?:.+ |)file "([^"]+)" containing(?: "([^"]+)"|:)$/')]
@@ -66,7 +59,7 @@ final class TestContext implements Context
             $content = $this->replaceAnnotationsWithAttributes($content);
         }
 
-        self::$filesystem->dumpFile(self::$workingDir . '/' . $file, $content);
+        $this->filesystem->dumpFile($this->workingDir . '/' . $file, $content);
     }
 
     #[Given('/^a feature file containing(?: "([^"]+)"|:)$/')]
@@ -78,20 +71,7 @@ final class TestContext implements Context
     #[Given('/^a feature file with passing scenario$/')]
     public function thereIsFeatureFileWithPassingScenario(): void
     {
-        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-use Behat\Step\Then;
-
-class FeatureContext implements \Behat\Behat\Context\Context
-{
-    #[Then('it passes')]
-    public function itPasses(): void {}
-}
-PHP);
-
+        $this->writeSharedFeatureContext();
         $this->thereIsFeatureFile(<<<'FEA'
 Feature: Passing feature
 
@@ -103,20 +83,7 @@ FEA);
     #[Given('/^a feature file with failing scenario$/')]
     public function thereIsFeatureFileWithFailingScenario(): void
     {
-        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-use Behat\Step\Then;
-
-class FeatureContext implements \Behat\Behat\Context\Context
-{
-    #[Then('it fails')]
-    public function itFails(): void { throw new \RuntimeException(); }
-}
-PHP);
-
+        $this->writeSharedFeatureContext();
         $this->thereIsFeatureFile(<<<'FEA'
 Feature: Failing feature
 
@@ -128,14 +95,7 @@ FEA);
     #[Given('/^a feature file with scenario with missing step$/')]
     public function thereIsFeatureFileWithScenarioWithMissingStep(): void
     {
-        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-class FeatureContext implements \Behat\Behat\Context\Context {}
-PHP);
-
+        $this->writeSharedFeatureContext();
         $this->thereIsFeatureFile(<<<'FEA'
 Feature: Feature with missing step
 
@@ -147,20 +107,7 @@ FEA);
     #[Given('/^a feature file with scenario with pending step$/')]
     public function thereIsFeatureFileWithScenarioWithPendingStep(): void
     {
-        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<'PHP'
-<?php
-
-declare(strict_types=1);
-
-use Behat\Step\Then;
-
-class FeatureContext implements \Behat\Behat\Context\Context
-{
-    #[Then('it has this step as pending')]
-    public function itFails(): void { throw new \Behat\Behat\Tester\Exception\PendingException(); }
-}
-PHP);
-
+        $this->writeSharedFeatureContext();
         $this->thereIsFeatureFile(<<<'FEA'
 Feature: Feature with pending step
 
@@ -174,7 +121,7 @@ FEA);
     {
         $this->process = new Process(
             [self::$phpBin, BEHAT_BIN_PATH, '--strict', '-vvv', '--no-interaction', '--lang=en'],
-            self::$workingDir,
+            $this->workingDir,
         );
         $this->process->start();
         $this->process->wait();
@@ -224,6 +171,29 @@ FEA);
         $this->assertOutputMatches($expectedOutput);
     }
 
+    private function writeSharedFeatureContext(): void
+    {
+        $this->thereIsFile('features/bootstrap/FeatureContext.php', <<<'PHP'
+<?php
+
+declare(strict_types=1);
+
+use Behat\Step\Then;
+
+class FeatureContext implements \Behat\Behat\Context\Context
+{
+    #[Then('it passes')]
+    public function itPasses(): void {}
+
+    #[Then('it fails')]
+    public function itFails(): void { throw new \RuntimeException(); }
+
+    #[Then('it has this step as pending')]
+    public function itHasThisStepAsPending(): void { throw new \Behat\Behat\Tester\Exception\PendingException(); }
+}
+PHP);
+    }
+
     private function assertOutputMatches(string $expectedOutput): void
     {
         $output = $this->getProcessOutput();
@@ -246,7 +216,7 @@ FEA);
 
     private function getProcessExitCode(): int
     {
-        return $this->getProcess()->getExitCode() ?? -1;
+        return $this->getProcess()->getExitCode() ?? 1;
     }
 
     private function getProcess(): Process
